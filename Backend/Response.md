@@ -72,7 +72,42 @@ MongoDB aggregations is a preference and a recommendation, but it's possible to 
 | 4          | Toph   | Blind Bandit      | ---                    |
 | 5          | ---    | The Blue Spirit   | Vasculitis             |
 
-<br>
-<br>
-<br>
+# Q1d: Improve Data Model
 
+This is the strategy I would take:
+2. Create a `Patient` collection.
+3. When new `fieldn_nm` and `field_value` information is submitted, it should update fields on an embedded document we can call `info`. This makes it easy and straight-forward to retrieve patient info with just an `id`, and/or based on any combination of queries to `field_nm/value`  pairs associated with them.
+4. Every `Patient` document should be initialized with all of the fields associated with that patient's `Clinic` as `null` values for the most normalized data embedded documents, making it more straightforward to query them, but also easy to see when they *could* exist in a query payload.
+5. If a `Clinic` ever changes the possible `field_nm`'s associated with it, run migrations on all patients to remove or add those new `field_nm`'s
+6. Optionally keep and simultaneously maintain the `ResultSchema` as a record of historical data.
+
+Rationale: This system shifts the computation to writing data, so that frequent reads don't require complex queries, grouping, and computational overhead.
+
+Fields on embedded documents can be indexed just like normal fields, ultimately allowing for really fast lookups, sensible collocation of patient data and a bonus of straightforward caching and cache-invalidation.
+
+## The case for keeping a parallel `Results` collection
+The above system would definitely work *without* `Results`, since all of the up-to-date info can be kept inside of the embedded `PatientInfo` document inside of each `Patient` document.
+
+However, it wouldn't be difficult to maintain this parallel collection, and it has a lot of benefits
+- Keeps the option open to query the state of `Patient` records at an arbitrary point in the past
+- Would prevent changes to a clinic's allowed fields from being a destructive data operation, allowing fields associated with a clinit to be added and removed more flexibly.
+- The record of changes to a patient's info could be helpful in the future.
+- Could make cross-clinic analytics way easier
+
+# Q2
+Since I don't have much experience with SQL, this is a great opportunity for me to understand both what was going on with the original query as well as why my colleague is proposing the changes in their PR.
+
+I would ask what the purpose was in changing the SELECT query so that the commas are at the beginning, after getting a bit of context about whether this is common.
+
+I'd basically do the same thing with removing 1=1 - I would spend a couple minutes looking to see if this is a convention with a purpose. Then I'd ask if this changes code execution at all, which I don't think it should based on that search.
+
+Since these don't *seem* to be functional changes, I would also ask if this type of change could be made in other places as well, in which case I would ask if it's a better strategy to reformat old style conventions commit by commit or in larger, more planned chunks to keep our version history easier to look through by the team.
+
+# Q3
+
+
+## Q3a
+
+
+## Q3b
+Oof, well first off I would make a backup of that daily batch file basically anywhere off of that server so we have it when it *does* go down.

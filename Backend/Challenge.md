@@ -188,6 +188,8 @@ const user = skibidi(async () => {
 
 Implement `skibidi`, `lowKey` and `yap`(can be in non-JS language). You can optionally implement with different usage syntax other than the above. The requirement is that `lowKey` is a chainable method.
 
+
+
 ### Q3b
 
 A fellow -REDACTED- developer found OSS community implementation of `skibidi`, `lowKey` , and `yap` and added the community version library to our codebase. This became our logging module for production. A new developer (aka you) joined to review this code. Upon inspection you realize that the community version is logging the error message to the local process only and currently the logs are being stored in daily batch file on local filesystem. It is fortunate that our production instance never went down because you can see all the logs from the beginning day when this logging system was implemented
