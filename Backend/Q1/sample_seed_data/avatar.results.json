@@ -1,0 +1,221 @@
+[{
+  "_id": {
+    "$oid": "67916e21770af477755dc55c"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "1"
+  },
+  "field_nm": "name",
+  "field_value": ""
+},
+{
+  "_id": {
+    "$oid": "67916ef7770af477755dc55e"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "1"
+  },
+  "field_nm": "nickname",
+  "field_value": "Twinkle Toes"
+},
+{
+  "_id": {
+    "$oid": "67916f2c770af477755dc55f"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "1"
+  },
+  "field_nm": "fav color",
+  "field_value": "orange or yellow"
+},
+{
+  "_id": {
+    "$oid": "67916f3a770af477755dc560"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "1"
+  },
+  "field_nm": "msk concern",
+  "field_value": "gout"
+},
+{
+  "_id": {
+    "$oid": "67916f51770af477755dc561"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "2"
+  },
+  "field_nm": "name",
+  "field_value": "Katara"
+},
+{
+  "_id": {
+    "$oid": "67916f5e770af477755dc562"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "2"
+  },
+  "field_nm": "nickname",
+  "field_value": "Hwamei"
+},
+{
+  "_id": {
+    "$oid": "67916f6d770af477755dc563"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "2"
+  },
+  "field_nm": "fav color",
+  "field_value": "blue"
+},
+{
+  "_id": {
+    "$oid": "67916f81770af477755dc564"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "2"
+  },
+  "field_nm": "msk concern",
+  "field_value": "hemophilic arthropathy"
+},
+{
+  "_id": {
+    "$oid": "67916fa2770af477755dc565"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "3"
+  },
+  "field_nm": "name",
+  "field_value": "sokka"
+},
+{
+  "_id": {
+    "$oid": "67916fac770af477755dc566"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "3"
+  },
+  "field_nm": "nickname",
+  "field_value": "captain boomerang"
+},
+{
+  "_id": {
+    "$oid": "67916fbf770af477755dc567"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "3"
+  },
+  "field_nm": "msk concern",
+  "field_value": "medial epicondylitis"
+},
+{
+  "_id": {
+    "$oid": "67916fd1770af477755dc568"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "4"
+  },
+  "field_nm": "name",
+  "field_value": "toph"
+},
+{
+  "_id": {
+    "$oid": "67916fdb770af477755dc569"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "4"
+  },
+  "field_nm": "nickname",
+  "field_value": "the blind bandit"
+},
+{
+  "_id": {
+    "$oid": "67916fea770af477755dc56a"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "4"
+  },
+  "field_nm": "fav color",
+  "field_value": "green"
+},
+{
+  "_id": {
+    "$oid": "67916ff7770af477755dc56b"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "4"
+  },
+  "field_nm": "msk concern",
+  "field_value": ""
+},
+{
+  "_id": {
+    "$oid": "67917018770af477755dc56c"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "5"
+  },
+  "field_nm": "nickname",
+  "field_value": "the blue spirit"
+},
+{
+  "_id": {
+    "$oid": "67917028770af477755dc56d"
+  },
+  "clinic_id": {
+    "$oid": "67916e35770af477755dc55d"
+  },
+  "patient_id": {
+    "$numberLong": "5"
+  },
+  "field_nm": "msk concern",
+  "field_value": "vasculitis"
+}]

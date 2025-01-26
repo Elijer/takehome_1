@@ -1,0 +1,179 @@
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Front End Exercise</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style type="text/css">
+    html {
+      margin: 0;
+      padding: 0;
+/*      background: linear-gradient(45deg, hsla(197, 100%, 63%, 1) 0%, hsla(294, 100%, 55%, 1) 100%);*/
+    }
+    body {
+      margin: 0;
+      padding: 10px;
+    }
+    #app {
+      display: flex;
+      flex-wrap: wrap;
+/*      gap: 10px;*/
+    }
+    #app > div {
+      --span: 1;
+      aspect-ratio: var(--span) / 1;
+      flex-basis: calc(calc(calc(var(--span) / 3) * 100%));
+      background: hsla(197, 100%, 63%, 1);
+      border: 10px solid white;
+      border-radius: 15px;
+      text-align: center;
+      box-sizing: border-box;
+      padding: 10px;
+    }
+  </style>
+  <script type="text/javascript">
+/////////////////
+// DO NOT EDIT //
+/////////////////
+
+const fetchData = (() => {
+  const fakeData = [];
+  const dataCount = Math.floor(Math.random() * 200) + 50;
+
+  for (let i = 0; i < dataCount; i++) {
+    fakeData.push({
+      id: i + 1,
+      span: Math.random() > 0.5 ? Math.floor(Math.random() * 3) + 1 : 1,
+    });
+  }
+
+  return (startIndex, endIndex) => {
+    const p = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({
+          length: fakeData.length,
+          data: fakeData.slice(startIndex, endIndex),
+        });
+      }, 333);
+    });
+    return p;
+  };
+})();
+
+////////////////////////
+// END of DO NOT EDIT //
+////////////////////////
+  </script>
+  </head>
+  <body>
+    <section id="app">
+      <div v-for="d in sortedData" :style="{ '--span': d.span }" :key="d.id">{{ d.id }}</div>
+      <button id="load" @click="getNextPage">Load more…</button>
+    </section>
+    <script type="text/javascript">
+const { createApp, ref, computed, onMounted } = Vue;
+
+createApp({
+  setup() {
+
+    function rowSummer(row){
+      return row.reduce((sum, brick) => sum + brick.span, 0);
+    }
+
+    const columns = 3;
+    const pageSize = 10;
+    const lastFetchedIndex = ref(0);
+    let mason = {}
+    const data = ref({ length: 0, data: [] });
+    const sortedData = computed(() => {
+      console.time("start")
+      let s = [...data.value.data];
+      let result = [];
+      let pendingRows = [];
+      
+      for (let i = 0; i < s.length; i++) {
+        let brick = s[i];
+        
+        // start with attempts to complete PENDING rows
+        let foundMatch = false;
+        for (let j = 0; j < pendingRows.length; j++) {
+          let row = pendingRows[j];
+          let rowSum = rowSummer(row)
+          
+          if (rowSum + brick.span === 3) {
+            // Perfect match! Complete this row
+            row.push(brick);
+            result.push(...row);
+            pendingRows.splice(j, 1);
+            foundMatch = true;
+            break;
+          }
+          else if (rowSum + brick.span < 3) {
+            // Can add to this row but won't complete it
+            row.push(brick);
+            foundMatch = true;
+            break;
+          }
+        }
+        
+        if (!foundMatch) {
+          // Start a new row
+          if (brick.span === 3) {
+            result.push(brick);
+          } else {
+            pendingRows.push([brick]);
+          }
+        }
+      }
+      
+      // Try to combine any remaining pending rows
+      while (pendingRows.length > 0) {
+        let combined = [];
+        let currentSum = 0;
+        
+        while (pendingRows.length > 0 && currentSum < 3) {
+          let nextRow = pendingRows[0];
+          let nextSum = rowSummer(nextRow)
+          
+          if (currentSum + nextSum <= 3) {
+            combined.push(...nextRow);
+            currentSum += nextSum;
+            pendingRows.shift();
+          } else {
+            break;
+          }
+        }
+        
+        if (currentSum === 3) {
+          result.push(...combined);
+        }
+      }
+      
+      console.timeEnd("start")
+      return result;
+
+    });
+    
+
+    async function getNextPage() {
+      const d = await fetchData(
+        lastFetchedIndex.value,
+        lastFetchedIndex.value + pageSize
+      );
+      lastFetchedIndex.value = lastFetchedIndex.value + d.data.length;
+      data.value = { length: d.length, data: [...data.value.data, ...d.data] };
+    }
+    onMounted(() => {
+      getNextPage();
+    });
+    return {
+      data,
+      sortedData,
+      lastFetchedIndex,
+      getNextPage,
+    };
+  },
+}).mount('#app');
+      </script>
+  </body>
+</html>
