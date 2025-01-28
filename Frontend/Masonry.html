@@ -76,6 +76,8 @@ const { createApp, ref, computed, onMounted } = Vue;
 createApp({
   setup() {
 
+    
+
     function rowSummer(row){
       return row.reduce((sum, brick) => sum + brick.span, 0);
     }
@@ -91,62 +93,40 @@ createApp({
       let result = [];
       let pendingRows = [];
       
-      for (let i = 0; i < s.length; i++) {
+      outer: for (let i = 0; i < s.length; i++) {
         let brick = s[i];
-        
-        // start with attempts to complete PENDING rows
-        let foundMatch = false;
+
+        if (brick.span === columns){
+          result.push(brick);
+          continue
+        }
+
+        let foundStragglerMatch = false
+          
+        // Match or contribute to first row we see
         for (let j = 0; j < pendingRows.length; j++) {
           let row = pendingRows[j];
-          let rowSum = rowSummer(row)
+          let potentialRow = rowSummer(row) + brick.span
+          if (potentialRow > columns) continue outer
           
-          if (rowSum + brick.span === 3) {
-            // Perfect match! Complete this row
+          // Perfect match
+          if (potentialRow === columns) {
             row.push(brick);
             result.push(...row);
             pendingRows.splice(j, 1);
-            foundMatch = true;
-            break;
+            foundStragglerMatch = true
+            continue outer
           }
-          else if (rowSum + brick.span < 3) {
-            // Can add to this row but won't complete it
+
+          if (potentialRow < columns){
             row.push(brick);
-            foundMatch = true;
-            break;
+            foundStragglerMatch = true
+            continue outer
           }
         }
-        
-        if (!foundMatch) {
-          // Start a new row
-          if (brick.span === 3) {
-            result.push(brick);
-          } else {
-            pendingRows.push([brick]);
-          }
-        }
-      }
-      
-      // Try to combine any remaining pending rows
-      while (pendingRows.length > 0) {
-        let combined = [];
-        let currentSum = 0;
-        
-        while (pendingRows.length > 0 && currentSum < 3) {
-          let nextRow = pendingRows[0];
-          let nextSum = rowSummer(nextRow)
-          
-          if (currentSum + nextSum <= 3) {
-            combined.push(...nextRow);
-            currentSum += nextSum;
-            pendingRows.shift();
-          } else {
-            break;
-          }
-        }
-        
-        if (currentSum === 3) {
-          result.push(...combined);
-        }
+
+        pendingRows.push([brick]);
+
       }
       
       console.timeEnd("start")
