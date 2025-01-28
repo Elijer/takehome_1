@@ -31,7 +31,7 @@
       padding: 10px;
     }
 
-    #loadIfVisible {
+    #sentry {
       height: 1px;
       width: 100%;
       background: transparent;
@@ -166,19 +166,19 @@ createApp({
       observer = new IntersectionObserver(async function(entries){
         if (entries[0].isIntersecting) getNextPage()
       }, options);
-      observer.observe(document.querySelector("#loadIfVisible"));
+      observer.observe(document.querySelector("#sentry"));
     }
 
-    function resetLoadIfVisibleLocation(){
-        const loadIfVisible = document.createElement("div")
-        loadIfVisible.id = "loadIfVisible"
+    function resetSentryLocation(){
+        const sentry = document.createElement("div")
+        sentry.id = "sentry"
         const app = document.getElementById("app")
-        app.appendChild(loadIfVisible)
+        app.appendChild(sentry)
       }
     
     onMounted(async() => {
       await getNextPage()
-      resetLoadIfVisibleLocation()
+      resetSentryLocation()
       createObserver()
     });
     return {
