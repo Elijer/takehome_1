@@ -184,17 +184,25 @@ createApp({
       createObserver()
     });
 
-    onUpdated(()=>{
-      const app = document.getElementById("app")
+    onUpdated(() => {
+      const app = document.getElementById("app");
       const eighthToLastChild = app.querySelector(':nth-last-child(10)') ?? app.querySelector(':nth-last-child(2)');
-      const prevEl = document.getElementById("sentry")
-      if (prevEl) prevEl.removeAttribute('id')
-      if (eighthToLastChild) eighthToLastChild.id = "sentry";
+      
+      // check to see if this child has changed - this prevents constantly reinitializing observer
+      // which prevents infinite updates
+      if (eighthToLastChild && eighthToLastChild.id !== "sentry") {
+        const prevEl = document.getElementById("sentry");
+        if (prevEl) prevEl.removeAttribute('id');
+        eighthToLastChild.id = "sentry";
+      }
+      
       if (observer.value) {
         observer.value.disconnect();
+        console.log("Observer disconnected");
       }
+      
       createObserver();
-    })
+    });
 
     onUnmounted(async()=>{
       if (observer.value) {
