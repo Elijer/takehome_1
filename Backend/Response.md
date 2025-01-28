@@ -113,6 +113,15 @@ I would also ask if this same type of change could apply to other SQL queries as
 
 Oof, well first off I would make a backup of that daily batch file basically anywhere off of that server so we have it when it *does* go down.
 
+My second course of action is to let everyone know, so we can determine how urgent this is - all hands on deck, or something someone can do in a couple days, etc?
+It sounds like it may be particularly urgent ESPECIALLY because Flagler probably has to log compliance data, but that's really what is important to figure out before proceeding - we have to answer the question, what do we need logs for? Here are some guesses:
+- compliance
+- general debugging
+- disaster prevention, response, and early warnings
+- throughput / rightsizing auditing
+- security alerts
+- tech debt prevention and delegation
+
 I think first off it would be good to see if we can set up Fluentd or Logstash in the meantime. This
 - gives us logs quickly
 - gives us a logging solution to compare an idea solution to.
