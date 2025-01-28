@@ -109,51 +109,51 @@ createApp({
       let s = [...data.value.data];
       let result = [];
       let pendingRows = [];
-      
+
       outer: for (let i = 0; i < s.length; i++) {
         let brick = s[i];
 
-        if (brick.span === columns){
+        // Handle full-width blocks immediately
+        if (brick.span === columns) {
           result.push(brick);
-          continue
+          continue;
         }
 
-        let foundStragglerMatch = false
-          
-        // Match or contribute to first row we see
+        // Try to fit into existing pending rows
+        let fitted = false;
         for (let j = 0; j < pendingRows.length; j++) {
           let row = pendingRows[j];
-          let potentialRow = rowSummer(row) + brick.span
-          if (potentialRow > columns) continue outer
+          let rowSum = rowSummer(row);
           
-          // Perfect match
-          if (potentialRow === columns) {
+          // If this brick fits in this row
+          if (rowSum + brick.span <= columns) {
             row.push(brick);
-            result.push(...row);
-            pendingRows.splice(j, 1);
-            foundStragglerMatch = true
-            continue outer
-          }
-
-          if (potentialRow < columns){
-            row.push(brick);
-            foundStragglerMatch = true
-            continue outer
+            
+            // If row is now full, move it to result
+            if (rowSum + brick.span === columns) {
+              result.push(...row);
+              pendingRows.splice(j, 1);
+            }
+            
+            fitted = true;
+            break;
           }
         }
 
-        pendingRows.push([brick]);
-
+        // If didn't fit in any existing row, start new row
+        if (!fitted) {
+          pendingRows.push([brick]);
+        }
       }
 
+      // Add any remaining pending rows to result
       for (let row of pendingRows) {
         result.push(...row);
       }
-      
+
       console.timeEnd("start")
       return result;
-
-    });
+      });
 
     function createObserver() {
       let observer;
@@ -176,9 +176,8 @@ createApp({
         app.appendChild(loadIfVisible)
       }
     
-    onMounted(() => {
-      getNextPage()
-      getNextPage()
+    onMounted(async() => {
+      await getNextPage()
       resetLoadIfVisibleLocation()
       createObserver()
     });
