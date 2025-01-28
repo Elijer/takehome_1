@@ -25,22 +25,21 @@
     #app > div {
       --span: 1;
       aspect-ratio: var(--span) / 1;
-      flex-basis: calc(calc(calc(var(--span) / 3) * 94%));
+      flex-basis: calc(calc(calc(var(--span) / 3) * 90%));
       flex-grow: 1;
       background: hsla(197, 100%, 63%, 1);
       border-radius: 15px;
       text-align: center;
       box-sizing: border-box;
       padding: 10px;
+      height: auto;
     }
 
-    #sentry {
-      height: 1px;
-      width: 100%;
-      background: transparent;
-      margin-top: 10px;
-      opacity: 0%;
+    #app > div:last-child {
+      /* background-color: #FF6347; */
+      flex-grow: 0; /* prevent last item from stretching vertically to take up all the space, which looks janky*/
     }
+
   </style>
   <script type="text/javascript">
 /////////////////
@@ -58,7 +57,7 @@ const fetchData = (() => {
     });
   }
   // console.log(JSON.stringify(fakeData, 2, null))
-  fakeData = JSON.parse(document.getElementById('sample-json-data').textContent)
+  // fakeData = JSON.parse(document.getElementById('sample-json-data').textContent)
 
   return (startIndex, endIndex) => {
     const p = new Promise((resolve, reject) => {
@@ -83,7 +82,7 @@ const fetchData = (() => {
       <div v-for="d in sortedData" :style="{ '--span': d.span }" :key="d.id">{{ d.id }}</div>
     </section>
     <script type="text/javascript">
-const { createApp, ref, computed, onMounted } = Vue;
+const { createApp, ref, computed, onMounted, onUnmounted, onUpdated } = Vue;
 
 createApp({
   setup() {
@@ -94,6 +93,7 @@ createApp({
     const lastFetchedIndex = ref(0);
     const isLoading = ref(false);
     const data = ref({ length: 0, data: [] });
+    const observer = ref(null)
 
     async function getNextPage(){
       const d = await fetchData(
@@ -161,36 +161,52 @@ createApp({
       });
 
     function createObserver() {
-      let observer;
       
       const options = {
         rootMargin: "0px",
         threshold: .1,
       };
 
-      observer = new IntersectionObserver(async function(entries){
+      let newObserver = new IntersectionObserver(async function(entries){
         if (entries[0].isIntersecting) getNextPage()
       }, options);
-      observer.observe(document.querySelector("#sentry"));
-    }
 
-    function resetSentryLocation(){
-        const sentry = document.createElement("div")
-        sentry.id = "sentry"
-        const app = document.getElementById("app")
-        app.appendChild(sentry)
+      observer.value = newObserver
+
+      const sentryEl = document.querySelector("#sentry");
+      if (sentryEl) {
+          observer.value.observe(sentryEl);  // Start observing the new #sentry
       }
+    }
     
     onMounted(async() => {
       await getNextPage()
-      resetSentryLocation()
       createObserver()
     });
+
+    onUpdated(()=>{
+      const app = document.getElementById("app")
+      const eighthToLastChild = app.querySelector(':nth-last-child(10)') ?? app.querySelector(':nth-last-child(2)');
+      const prevEl = document.getElementById("sentry")
+      if (prevEl) prevEl.removeAttribute('id')
+      if (eighthToLastChild) eighthToLastChild.id = "sentry";
+      if (observer.value) {
+        observer.value.disconnect();
+      }
+      createObserver();
+    })
+
+    onUnmounted(async()=>{
+      if (observer.value) {
+        observer.value.disconnect();
+        console.log("Observer disconnected");
+      }
+    })
+
     return {
       data,
       sortedData,
       lastFetchedIndex,
-      // handleIntersect
     };
   },
 }).mount('#app');
