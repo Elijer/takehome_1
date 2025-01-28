@@ -11,9 +11,6 @@ console.time('build table')
 // await getResults()
 // const result = await getTableData(clinicId);
 const result = await getTableDataAgg(clinicId);
-// const result = await getTableDataAgg2(clinicId);
-for (const r of result){
-  console.log(r)
-}
+console.log(result)
 console.timeEnd('build table')
 mongoose.connection.close();

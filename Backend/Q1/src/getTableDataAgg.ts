@@ -18,31 +18,38 @@ interface DBResult {
 
 export async function getTableDataAgg(clinicId: string, patientId: number | null = null): Promise<string> {
 
-  const matchStage = {
-    $match: {
-      clinic_id: castAsObjectId(clinicId), // necessary fix for known issue: https://github.com/Automattic/mongoose/issues/1399
-      field_nm: { $ne: '', $exists: true },
-      field_value: { $ne: '', $exists: true },
-      ...patientId ? {patient_id: patientId} : {}
-    }
-  }
-
-  const dbResult: DBResult[] = await ResultModel.aggregate([
-    matchStage,
-    {
-      $group: {
-        _id: '$patient_id',
-        fields: {
-          $push: {
-            $concatArrays: [ ["$field_nm"], ["$field_value"] ]
-          }
-        }
+  try {
+    const matchStage = {
+      $match: {
+        clinic_id: castAsObjectId(clinicId), // necessary fix for known issue: https://github.com/Automattic/mongoose/issues/1399
+        field_nm: { $ne: '', $exists: true },
+        field_value: { $ne: '', $exists: true },
+        ...patientId ? {patient_id: patientId} : {}
       }
     }
-  ]).exec();
-
-
-  return transformAggregationResultToJSONTable(dbResult)
+  
+    const dbResult: DBResult[] = await ResultModel.aggregate([
+      matchStage,
+      {
+        $group: {
+          _id: '$patient_id',
+          fields: {
+            $push: {
+              $concatArrays: [ ["$field_nm"], ["$field_value"] ]
+            }
+          }
+        }
+      },
+      {
+        $limit: 200
+      }
+    ]).exec();
+  
+  
+    return transformAggregationResultToJSONTable(dbResult)
+  } catch(e){
+    console.error(e)
+  }
 }
 
 function transformAggregationResultToJSONTable(results: DBResult[]): any {
