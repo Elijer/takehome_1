@@ -188,8 +188,7 @@ createApp({
       const app = document.getElementById("app");
       const eighthToLastChild = app.querySelector(':nth-last-child(10)') ?? app.querySelector(':nth-last-child(2)');
       
-      // check to see if this child has changed - this prevents constantly reinitializing observer
-      // which prevents infinite updates
+      // updating the dom will recall onUpdated, so we have to provide a base case to exit that loop
       if (eighthToLastChild && eighthToLastChild.id !== "sentry") {
         const prevEl = document.getElementById("sentry");
         if (prevEl) prevEl.removeAttribute('id');
