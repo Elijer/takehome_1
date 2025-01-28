@@ -4,11 +4,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Front End Exercise</title>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script type="application/json" id="sample-json-data">
+    [{"id":1,"span":2},{"id":2,"span":2},{"id":3,"span":1},{"id":4,"span":1},{"id":5,"span":1},{"id":6,"span":3},{"id":7,"span":1},{"id":8,"span":1},{"id":9,"span":1},{"id":10,"span":1},{"id":11,"span":2},{"id":12,"span":1},{"id":13,"span":1},{"id":14,"span":1},{"id":15,"span":2},{"id":16,"span":1},{"id":17,"span":1},{"id":18,"span":1},{"id":19,"span":3},{"id":20,"span":1},{"id":21,"span":1},{"id":22,"span":1},{"id":23,"span":1},{"id":24,"span":3},{"id":25,"span":2},{"id":26,"span":1},{"id":27,"span":1},{"id":28,"span":3},{"id":29,"span":2},{"id":30,"span":1},{"id":31,"span":1},{"id":32,"span":2},{"id":33,"span":3},{"id":34,"span":2},{"id":35,"span":2},{"id":36,"span":1},{"id":37,"span":1},{"id":38,"span":2},{"id":39,"span":1},{"id":40,"span":1},{"id":41,"span":1},{"id":42,"span":1},{"id":43,"span":2},{"id":44,"span":1},{"id":45,"span":3},{"id":46,"span":3},{"id":47,"span":1},{"id":48,"span":1},{"id":49,"span":1},{"id":50,"span":1},{"id":51,"span":1},{"id":52,"span":1},{"id":53,"span":1},{"id":54,"span":1},{"id":55,"span":1},{"id":56,"span":2},{"id":57,"span":1},{"id":58,"span":1},{"id":59,"span":1},{"id":60,"span":1},{"id":61,"span":3},{"id":62,"span":3},{"id":63,"span":1},{"id":64,"span":1},{"id":65,"span":2},{"id":66,"span":1},{"id":67,"span":1},{"id":68,"span":2},{"id":69,"span":3},{"id":70,"span":1},{"id":71,"span":1}]
+  </script>
   <style type="text/css">
     html {
       margin: 0;
       padding: 0;
-/*      background: linear-gradient(45deg, hsla(197, 100%, 63%, 1) 0%, hsla(294, 100%, 55%, 1) 100%);*/
+      background: linear-gradient(45deg, hsla(197, 100%, 63%, 1) 0%, hsla(294, 100%, 55%, 1) 100%);
     }
     body {
       margin: 0;
@@ -17,14 +20,14 @@
     #app {
       display: flex;
       flex-wrap: wrap;
-/*      gap: 10px;*/
+      gap: 10px;
     }
     #app > div {
       --span: 1;
       aspect-ratio: var(--span) / 1;
-      flex-basis: calc(calc(calc(var(--span) / 3) * 100%));
+      flex-basis: calc(calc(calc(var(--span) / 3) * 94%));
+      flex-grow: 1;
       background: hsla(197, 100%, 63%, 1);
-      border: 10px solid white;
       border-radius: 15px;
       text-align: center;
       box-sizing: border-box;
@@ -45,7 +48,7 @@
 /////////////////
 
 const fetchData = (() => {
-  const fakeData = [];
+  let fakeData = [];
   const dataCount = Math.floor(Math.random() * 200) + 50;
 
   for (let i = 0; i < dataCount; i++) {
@@ -54,6 +57,8 @@ const fetchData = (() => {
       span: Math.random() > 0.5 ? Math.floor(Math.random() * 3) + 1 : 1,
     });
   }
+  // console.log(JSON.stringify(fakeData, 2, null))
+  fakeData = JSON.parse(document.getElementById('sample-json-data').textContent)
 
   return (startIndex, endIndex) => {
     const p = new Promise((resolve, reject) => {
