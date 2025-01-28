@@ -30,6 +30,14 @@
       box-sizing: border-box;
       padding: 10px;
     }
+
+    #loadIfVisible {
+      height: 1px;
+      width: 100%;
+      background: transparent;
+      margin-top: 10px;
+      opacity: 0%;
+    }
   </style>
   <script type="text/javascript">
 /////////////////
@@ -68,7 +76,6 @@ const fetchData = (() => {
   <body>
     <section id="app">
       <div v-for="d in sortedData" :style="{ '--span': d.span }" :key="d.id">{{ d.id }}</div>
-      <button id="load" @click="getNextPage">Load more…</button>
     </section>
     <script type="text/javascript">
 const { createApp, ref, computed, onMounted } = Vue;
@@ -76,17 +83,27 @@ const { createApp, ref, computed, onMounted } = Vue;
 createApp({
   setup() {
 
-    
+    const BUFFER_THRESHHOLD = 0.5;
+    const columns = 3;
+    const pageSize = 10;
+    const lastFetchedIndex = ref(0);
+    const isLoading = ref(false);
+    const data = ref({ length: 0, data: [] });
+
+    async function getNextPage(){
+      const d = await fetchData(
+          lastFetchedIndex.value,
+          lastFetchedIndex.value + pageSize
+        );
+        console.log(d.length)
+        lastFetchedIndex.value = lastFetchedIndex.value + d.data.length;
+        data.value = { length: d.length, data: [...data.value.data, ...d.data] };
+    }
 
     function rowSummer(row){
       return row.reduce((sum, brick) => sum + brick.span, 0);
     }
 
-    const columns = 3;
-    const pageSize = 10;
-    const lastFetchedIndex = ref(0);
-    let mason = {}
-    const data = ref({ length: 0, data: [] });
     const sortedData = computed(() => {
       console.time("start")
       let s = [...data.value.data];
@@ -128,29 +145,48 @@ createApp({
         pendingRows.push([brick]);
 
       }
+
+      for (let row of pendingRows) {
+        result.push(...row);
+      }
       
       console.timeEnd("start")
       return result;
 
     });
-    
 
-    async function getNextPage() {
-      const d = await fetchData(
-        lastFetchedIndex.value,
-        lastFetchedIndex.value + pageSize
-      );
-      lastFetchedIndex.value = lastFetchedIndex.value + d.data.length;
-      data.value = { length: d.length, data: [...data.value.data, ...d.data] };
+    function createObserver() {
+      let observer;
+      
+      const options = {
+        rootMargin: "0px",
+        threshold: .1,
+      };
+
+      observer = new IntersectionObserver(async function(entries){
+        if (entries[0].isIntersecting) getNextPage()
+      }, options);
+      observer.observe(document.querySelector("#loadIfVisible"));
     }
+
+    function resetLoadIfVisibleLocation(){
+        const loadIfVisible = document.createElement("div")
+        loadIfVisible.id = "loadIfVisible"
+        const app = document.getElementById("app")
+        app.appendChild(loadIfVisible)
+      }
+    
     onMounted(() => {
-      getNextPage();
+      getNextPage()
+      getNextPage()
+      resetLoadIfVisibleLocation()
+      createObserver()
     });
     return {
       data,
       sortedData,
       lastFetchedIndex,
-      getNextPage,
+      // handleIntersect
     };
   },
 }).mount('#app');
