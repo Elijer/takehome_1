@@ -8,8 +8,6 @@ Please read the following set of questions and prepare to discuss them during ou
 
 You will notice that there’s actually no code-submission required. This is a take-home that is more of “Here are questions that we care about and are relevant to our engineering needs”. It is up to you on how much you want to do. Some questions might more easily be explained by sharing code/diagram with us. Verbally discussing them is also fine. We do not require any code submission but you can share us your answers.
 
-Please schedule a meeting with Leon Kim at https://calendar.app.google/pcxYyMcjR22RS9rM7  when you are ready to discuss. Other members may join as needed.
-
 ## Interview Process & Goals
 
 We do not have leetcode-style online assessment. We expect that you would use StackOverflow, ChatGPT etc. to solve these questions. We don’t care how. We also don’t care what language to solve the problem. The follow-up meeting is intended to discuss and analyze the implementations.
